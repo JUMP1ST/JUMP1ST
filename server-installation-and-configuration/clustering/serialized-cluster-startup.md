@@ -1,0 +1,15 @@
+# Serialized Cluster Startup
+
+Keycloak cluster nodes are allowed to boot concurrenty. When Keycloak server instance boots up it may do some database migration, importing, or first time initializations. A DB lock is used to prevent start actions from conflicting with one another when cluster nodes boot up concurrently.
+
+By default, the maximum timeout for this lock is 900 seconds. If a node is waiting on this lock for more than the timeout it will fail to boot. Typically you won’t need to increase/decrease the default value, but just in case it’s possible to configure it in `standalone.xml`, `standalone-ha.xml`, or `domain.xml` file in your distribution. The location of this file depends on your [operating mode](https://wjw465150.gitbooks.io/keycloak-documentation/content/server\_installation/topics/operating-mode.html#\_operating-mode).
+
+```xml
+<spi name="dblock">
+    <provider name="jpa" enabled="true">
+        <properties>
+            <property name="lockWaitTimeout" value="900"/>
+        </properties>
+    </provider>
+</spi>
+```
